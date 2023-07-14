@@ -11,20 +11,16 @@ import br.com.banco.core.entity.Transferencia;
 
 public interface TransferenciaRepository extends JpaRepository<Transferencia, Long> {
 
-//	@Query("DELETE FROM Transferencia t WHERE t.conta = :idContaParaDeletar")
-//	void deletarTransferenciaPorConta(@Param("idContaParaDeletar") Long idConta);
-	
 	@Modifying
 	@Query(value = "DELETE FROM Transferencia as t WHERE t.conta_id = :conta", nativeQuery = true)
 	void deletarTransferenciaPorConta(@Param("conta") Long id);
 
-
 	@Query(value = "SELECT * FROM Transferencia as t WHERE t.conta_id = :id", nativeQuery = true)
-//	List<Transferencia> findTransferenciaByConta();
 	List<Transferencia> findTransferenciaByConta(@Param("id") Long idConta);
+	
+	@Modifying
+	@Query(value = "DELETE FROM Transferencia as t WHERE t.id = :conta", nativeQuery = true)
+	void deletarTransferenciaPorIsa(@Param("conta") Long id);
 
 }
 
-//@Query(value = "SELECT sc FROM SolicitacaoImportacao sc "
-//		+ "WHERE (sc.codigoSituacaoSolicitacao = 2 OR sc.codigoSituacaoSolicitacao = 5 OR sc.codigoSituacaoSolicitacao = 4 "
-//		+ "OR sc.codigoSituacaoSolicitacao = 7) " + "ORDER BY sc.sequencial", nativeQuery = true)

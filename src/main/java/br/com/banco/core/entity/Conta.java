@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -31,7 +32,14 @@ public class Conta implements Serializable{
 	
 	//@OneToMany(fetch = FetchType.LAZY)
 	//@JoinColumn(name = "conta_id")
-	@OneToMany(mappedBy = "conta", fetch = FetchType.LAZY)
-	private List<Transferencia> transferencias; 
+//	@OneToMany(mappedBy = "conta", fetch = FetchType.LAZY)
+//	@OneToMany(mappedBy = "conta", fetch = FetchType.LAZY)
+//    @Fetch(FetchMode.SUBSELECT)
+//	private List<Transferencia> transferencias; 
+	
+//    @OneToMany(mappedBy = "conta", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "conta_id")
+    private List<Transferencia> transferencias;
 	
 }

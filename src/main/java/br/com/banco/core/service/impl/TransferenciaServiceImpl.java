@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import br.com.banco.core.entity.Conta;
 import br.com.banco.core.entity.Transferencia;
 import br.com.banco.core.service.TransferenciaService;
+import br.com.banco.integration.repository.ContaRepository;
 import br.com.banco.integration.repository.TransferenciaRepository;
 
 @Service
 public class TransferenciaServiceImpl implements TransferenciaService{
 	
+		
 	@Autowired
 	private TransferenciaRepository transferenciaRepository;
 	
@@ -23,6 +25,9 @@ public class TransferenciaServiceImpl implements TransferenciaService{
 		return transferenciaRepository.findAll();
 		
 	}
+	
+	@Autowired
+	private ContaRepository contaRepository;
 
 	@Transactional
 	@Override
@@ -37,10 +42,29 @@ public class TransferenciaServiceImpl implements TransferenciaService{
 //		return transferenciaRepository.findAll();
 
 	}
-
+	
+	@Transactional
 	@Override
 	public Transferencia salvarTransferencia(Transferencia transferencia) {
 		return transferenciaRepository.save(transferencia);
 	}
+
+	@Override
+	public Transferencia buscarTransferenciaPorId(Long idTransferencia) {
+		
+		Transferencia transferencia = transferenciaRepository.findById(idTransferencia).orElse(null);
+		return transferencia;
+	}
+
+
+	@Override
+	public void deletarTransferenciaPorId(Long idTransferencia) {
+		if(!(idTransferencia == null)) {
+			
+			transferenciaRepository.deleteById(idTransferencia);			
+		}
+		
+	}
+
 
 }

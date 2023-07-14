@@ -9,13 +9,17 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.banco.core.entity.Conta;
 import br.com.banco.core.entity.Transferencia;
+import br.com.banco.core.service.ContaService;
 import br.com.banco.core.service.TransferenciaService;
 import br.com.banco.integration.repository.TransferenciaRepository;
 import br.com.banco.v1.dto.TransferenciaDTO;
@@ -26,7 +30,7 @@ public class TransferenciaController {
 	
 	@Autowired
 	TransferenciaService service;
-
+	
 	@Autowired
 	TransferenciaRepository transferenciaRepository;
 	
@@ -60,5 +64,17 @@ public class TransferenciaController {
 		TransferenciaDTO transferenciaDTORetorno = modelMapper.map(transferencia, TransferenciaDTO.class);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(transferenciaDTORetorno);
+	}
+	
+	@DeleteMapping("transferencia/{idTransferencia}")
+	public ResponseEntity<Object> deleteTransferencia(@PathVariable(value = "idTransferencia") Long idTransferencia){
+		
+		Transferencia transferencia = service.buscarTransferenciaPorId(idTransferencia);
+		if (transferencia != null) {
+			service.deletarTransferenciaPorId(idTransferencia);
+			return ResponseEntity.status(HttpStatus.OK).body("Transferencia deletada com sucesso.");
+		}
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Conta com o Id = " + idTransferencia + " não foi encontrada.");
 	}
 }

@@ -1,7 +1,6 @@
 package br.com.banco.core.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,7 @@ public class ContaServiceImpl implements ContaService {
 	public void deletarConta(Conta conta) {
 			if(!conta.getTransferencias().isEmpty()) {
 				// Deletar todas as transferências dessa conta.
-				transferenciaService.deletarTransferenciaPorConta(conta); 				
+				//transferenciaService.deletarTransferenciaPorConta(conta); 				
 			}
 		contaRepository.delete(conta);
 	}

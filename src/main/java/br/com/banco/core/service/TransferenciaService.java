@@ -15,4 +15,9 @@ public interface TransferenciaService {
 
 	Transferencia salvarTransferencia(Transferencia transferencia);
 
+	Transferencia buscarTransferenciaPorId(Long idTransferencia);
+
+	void deletarTransferenciaPorId(Long idTransferencia);
+
+
 }
