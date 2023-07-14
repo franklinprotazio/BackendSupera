@@ -18,6 +18,11 @@ public class ContaServiceImpl implements ContaService {
 	@Override
 	public List<Conta> getContas() {
 		return contaRepository.findAll();
-	}	
+	}
+
+	@Override
+	public Conta salvarConta(Conta conta) {
+		return contaRepository.save(conta);
+	}
 	
 }
