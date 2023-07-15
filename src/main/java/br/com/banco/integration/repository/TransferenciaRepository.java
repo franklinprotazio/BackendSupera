@@ -20,7 +20,10 @@ public interface TransferenciaRepository extends JpaRepository<Transferencia, Lo
 	
 	@Modifying
 	@Query(value = "DELETE FROM Transferencia as t WHERE t.id = :conta", nativeQuery = true)
-	void deletarTransferenciaPorIsa(@Param("conta") Long id);
+	void deletarTransferenciaPorIsa(@Param("conta") Long id); 
+	
+    List<Transferencia> findByNomeOperadorTransacao(String nomeOperadorTransacao);
+
 
 }
 

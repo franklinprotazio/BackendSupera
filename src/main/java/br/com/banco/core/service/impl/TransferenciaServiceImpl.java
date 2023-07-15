@@ -1,5 +1,6 @@
 package br.com.banco.core.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -39,8 +40,6 @@ public class TransferenciaServiceImpl implements TransferenciaService{
 	@Override
 	public List<Transferencia> buscarTransferenciaPorConta(Conta conta) {
 		return transferenciaRepository.findTransferenciaByConta(conta.getIdConta());
-//		return transferenciaRepository.findAll();
-
 	}
 	
 	@Transactional
@@ -66,5 +65,12 @@ public class TransferenciaServiceImpl implements TransferenciaService{
 		
 	}
 
+	@Override
+	public List<Transferencia> buscarTransferenciasPorNomeOperador(String nomeOperador) {
+		List<Transferencia> transferencias = transferenciaRepository.findByNomeOperadorTransacao(nomeOperador);
+
+		return transferencias;
+	}
+	
 
 }

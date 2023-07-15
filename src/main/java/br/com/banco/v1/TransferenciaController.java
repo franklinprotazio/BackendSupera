@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.banco.core.entity.Conta;
 import br.com.banco.core.entity.Transferencia;
-import br.com.banco.core.service.ContaService;
 import br.com.banco.core.service.TransferenciaService;
 import br.com.banco.integration.repository.TransferenciaRepository;
+import br.com.banco.v1.dto.ContaDTO;
 import br.com.banco.v1.dto.TransferenciaDTO;
 
 @RestController
@@ -77,4 +77,33 @@ public class TransferenciaController {
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Conta com o Id = " + idTransferencia + " não foi encontrada.");
 	}
+	
+	
+	@GetMapping("transferencia/nomeoperador/{nomeOperador}")
+	public ResponseEntity<Object> buscarOperador(@PathVariable(value = "nomeOperador") String nomeOperador) {
+	    List<Transferencia> transferencias = service.buscarTransferenciasPorNomeOperador(nomeOperador);
+	    if (!transferencias.isEmpty()) {
+	        return ResponseEntity.ok(transferencias);
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O operador "+ nomeOperador +" não encontrado");
+	    }
+	}
+
+
+	
+	
+//	@GetMapping("conta/{idConta}")
+//	public ResponseEntity<Object> buscarContaPorId(@PathVariable(value = "idConta") Long idConta) {
+//		Conta conta = service.buscarContaPorId(idConta);
+//
+//		if (conta != null) {
+//
+//			ContaDTO contaDTO = modelMapper.map(conta, ContaDTO.class);
+//			contaDTO.setTransferencias(conta.getTransferencias());
+//			return ResponseEntity.status(HttpStatus.OK).body(contaDTO);
+//		}
+//
+//		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Conta com o Id = " + idConta + " não foi encontrada.");
+//
+//	}
 }

@@ -19,5 +19,7 @@ public interface TransferenciaService {
 
 	void deletarTransferenciaPorId(Long idTransferencia);
 
+	List<Transferencia> buscarTransferenciasPorNomeOperador(String nomeOperador);
+
 
 }

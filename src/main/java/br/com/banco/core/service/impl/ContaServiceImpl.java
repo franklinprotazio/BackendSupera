@@ -43,6 +43,7 @@ public class ContaServiceImpl implements ContaService {
 	public Conta buscarContaPorId(Long id) {
 		
 		Conta conta = contaRepository.findById(id).orElse(null);
+		
 		List<Transferencia> transferencias = transferenciaService.buscarTransferenciaPorConta(conta);
 		conta.setTransferencias(transferencias);
 			
