@@ -14,8 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 
 @Data
@@ -42,20 +40,8 @@ public class Transferencia implements Serializable {
 	@Column(name = "nome_operador_transacao")
 	private String nomeOperadorTransacao;
 
-//	@ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id_conta", referencedColumnName = "id_conta")
-//	private Conta conta;
-
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "conta_id", referencedColumnName = "id_conta")
-//	private Conta conta;
-
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "conta_id", referencedColumnName = "id_conta", nullable = false)
-//	@JsonIgnore
-//	private Conta conta;
-	
-	@Column(name = "conta_id")
-	private Long idConta;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "conta_id")
+	private Conta conta;
 
 }

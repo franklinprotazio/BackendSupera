@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,95 +14,59 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.banco.core.entity.Conta;
-import br.com.banco.core.entity.Transferencia;
 import br.com.banco.core.service.TransferenciaService;
 import br.com.banco.integration.repository.TransferenciaRepository;
-import br.com.banco.v1.dto.ContaDTO;
 import br.com.banco.v1.dto.TransferenciaDTO;
 
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v1/transferencia")
 public class TransferenciaController {
-	
+
 	@Autowired
 	TransferenciaService service;
-	
+
 	@Autowired
 	TransferenciaRepository transferenciaRepository;
-	
-	@Autowired
-	private ModelMapper modelMapper; 
-	
-	@GetMapping("transferencia")
-	public List<TransferenciaDTO> getTranferencia() {
-		
-		List<Transferencia> transferencias = new ArrayList<>();
-		List<TransferenciaDTO> transferenciasDTO = new ArrayList<>();
-		
-		transferencias = service.getTransferencia();
-		
-		for (Transferencia transferencia : transferencias) {
-			TransferenciaDTO transferenciaDTO = new TransferenciaDTO();
-			transferenciaDTO = modelMapper.map(transferencia, TransferenciaDTO.class);
-			transferenciasDTO.add(transferenciaDTO);
-		}
-		
-		return transferenciasDTO;
-	}
-	
-	@PostMapping("transferencia")
-	public ResponseEntity<TransferenciaDTO> saveConta(@RequestBody @Valid TransferenciaDTO transferenciaDTO) {
-		
-		Transferencia transferencia = new Transferencia();
-		transferencia = modelMapper.map(transferenciaDTO, Transferencia.class);	
-		transferencia = service.salvarTransferencia(transferencia);
-		
-		TransferenciaDTO transferenciaDTORetorno = modelMapper.map(transferencia, TransferenciaDTO.class);
-		
-		return ResponseEntity.status(HttpStatus.CREATED).body(transferenciaDTORetorno);
-	}
-	
-	@DeleteMapping("transferencia/{idTransferencia}")
-	public ResponseEntity<Object> deleteTransferencia(@PathVariable(value = "idTransferencia") Long idTransferencia){
-		
-		Transferencia transferencia = service.buscarTransferenciaPorId(idTransferencia);
-		if (transferencia != null) {
-			service.deletarTransferenciaPorId(idTransferencia);
-			return ResponseEntity.status(HttpStatus.OK).body("Transferencia deletada com sucesso.");
-		}
 
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Conta com o Id = " + idTransferencia + " não foi encontrada.");
+	@GetMapping()
+	public ResponseEntity<Object> getTransferencias(
+			@RequestParam(name = "dataInicio", required = false) String dataInicio,
+			@RequestParam(name = "dataFim", required = false) String dataFim,
+			@RequestParam(name = "nome", required = false) String nome) {
+
+		List<TransferenciaDTO> lista = service.getTransferencias(dataInicio, dataFim, nome);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(lista);
+
 	}
-	
-	
-	@GetMapping("transferencia/nomeoperador/{nomeOperador}")
+
+	@PostMapping()
+	public ResponseEntity<Object> saveTransferencia(@RequestBody @Valid TransferenciaDTO transferenciaDTO) {
+
+		TransferenciaDTO transferenciaReturnoDTO = service.salvarTransferencia(transferenciaDTO);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(transferenciaReturnoDTO);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Object> deleteTransferencia(@PathVariable(value = "id") Long idTransferencia) {
+
+		service.deletarTransferenciaPorId(idTransferencia);
+
+		return ResponseEntity.status(HttpStatus.OK).body("A transferência de ID "+ idTransferencia +" deletada com sucesso.");
+	}
+
+	@GetMapping("nome-operador/{nomeOperador}")
 	public ResponseEntity<Object> buscarOperador(@PathVariable(value = "nomeOperador") String nomeOperador) {
-	    List<Transferencia> transferencias = service.buscarTransferenciasPorNomeOperador(nomeOperador);
-	    if (!transferencias.isEmpty()) {
-	        return ResponseEntity.ok(transferencias);
-	    } else {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O operador "+ nomeOperador +" não encontrado");
-	    }
+
+		List<TransferenciaDTO> transferenciasDTO = new ArrayList<>();
+
+		transferenciasDTO = service.buscarTransferenciasPorNomeOperador(nomeOperador);
+
+		return ResponseEntity.status(HttpStatus.OK).body(transferenciasDTO);
 	}
 
-
-	
-	
-//	@GetMapping("conta/{idConta}")
-//	public ResponseEntity<Object> buscarContaPorId(@PathVariable(value = "idConta") Long idConta) {
-//		Conta conta = service.buscarContaPorId(idConta);
-//
-//		if (conta != null) {
-//
-//			ContaDTO contaDTO = modelMapper.map(conta, ContaDTO.class);
-//			contaDTO.setTransferencias(conta.getTransferencias());
-//			return ResponseEntity.status(HttpStatus.OK).body(contaDTO);
-//		}
-//
-//		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Conta com o Id = " + idConta + " não foi encontrada.");
-//
-//	}
 }

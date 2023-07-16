@@ -3,23 +3,22 @@ package br.com.banco.core.service;
 import java.util.List;
 
 import br.com.banco.core.entity.Conta;
-import br.com.banco.core.entity.Transferencia;
+import br.com.banco.v1.dto.TransferenciaDTO;
 
 public interface TransferenciaService {
 
-	List<Transferencia> getTransferencia();
-
 	void deletarTransferenciaPorConta(Conta conta);
 
-	List<Transferencia> buscarTransferenciaPorConta(Conta conta);
+	List<TransferenciaDTO> buscarTransferenciaPorConta(Conta conta);
 
-	Transferencia salvarTransferencia(Transferencia transferencia);
+	TransferenciaDTO salvarTransferencia(TransferenciaDTO transferenciaDTO);
 
-	Transferencia buscarTransferenciaPorId(Long idTransferencia);
+	TransferenciaDTO buscarTransferenciaPorId(Long idTransferencia);
 
 	void deletarTransferenciaPorId(Long idTransferencia);
 
-	List<Transferencia> buscarTransferenciasPorNomeOperador(String nomeOperador);
+	List<TransferenciaDTO> buscarTransferenciasPorNomeOperador(String nomeOperadorTransacao);
 
+	List<TransferenciaDTO> getTransferencias(String dataInicio, String dataFim, String nome);
 
 }

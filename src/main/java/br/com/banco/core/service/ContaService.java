@@ -2,18 +2,18 @@ package br.com.banco.core.service;
 
 import java.util.List;
 
-import br.com.banco.core.entity.Conta;
+import br.com.banco.v1.dto.ContaDTO;
 
 public interface ContaService {
 
-	List<Conta> getContas();
+	List<ContaDTO> getContas();
 
-	Conta salvarConta(Conta conta);
+	ContaDTO salvarConta(ContaDTO contaDTO);
 	
-	void deletarConta(Conta conta);
+	void deletarConta(Long idConta);
 	
-	Conta buscarContaPorId(Long id);
+	ContaDTO buscarContaPorId(Long id);
 
-	void updateConta(Conta conta);
+	ContaDTO updateConta(Long idConta, ContaDTO contaDTO);
 	
 }

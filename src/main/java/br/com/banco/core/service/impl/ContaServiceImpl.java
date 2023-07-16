@@ -1,59 +1,100 @@
 package br.com.banco.core.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.banco.core.entity.Conta;
 import br.com.banco.core.entity.Transferencia;
+import br.com.banco.core.exception.EntidadeNaoEncontradaException;
 import br.com.banco.core.service.ContaService;
-import br.com.banco.core.service.TransferenciaService;
 import br.com.banco.integration.repository.ContaRepository;
+import br.com.banco.integration.repository.TransferenciaRepository;
+import br.com.banco.v1.dto.ContaDTO;
+import br.com.banco.v1.dto.TransferenciaSemContaDTO;
 
 @Service
 public class ContaServiceImpl implements ContaService {
-	
-	@Autowired
-	private TransferenciaService transferenciaService;
 
 	@Autowired
 	private ContaRepository contaRepository;
 
-	@Override
-	public List<Conta> getContas() {
-		return contaRepository.findAll();
-	}
+	@Autowired
+	private TransferenciaRepository transferenciaRepository;
+
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@Override
-	public Conta salvarConta(Conta conta) {
-		return contaRepository.save(conta);
-	}
+	public List<ContaDTO> getContas() {
+		List<Conta> contas = contaRepository.findAll();
+		List<ContaDTO> listaRetornos = new ArrayList<>();
+		List<TransferenciaSemContaDTO> listaTranferenciasDTO = new ArrayList<>();
 
-	@Override
-	public void deletarConta(Conta conta) {
-			if(!conta.getTransferencias().isEmpty()) {
-				// Deletar todas as transferências dessa conta.
-				//transferenciaService.deletarTransferenciaPorConta(conta); 				
+		if (!contas.isEmpty()) {
+			for (Conta conta : contas) {
+				List<Transferencia> listaTranferencias = transferenciaRepository
+						.findTransferenciaByConta(conta.getIdConta());
+				for (Transferencia transferencia : listaTranferencias) {
+
+					TransferenciaSemContaDTO tranferenciasDTO = modelMapper.map(transferencia,
+							TransferenciaSemContaDTO.class);
+					listaTranferenciasDTO.add(tranferenciasDTO);
+				}
+				ContaDTO contaDTO = modelMapper.map(conta, ContaDTO.class);
+				contaDTO.setTransferencias(listaTranferenciasDTO);
+				listaRetornos.add(contaDTO);
 			}
-		contaRepository.delete(conta);
+		}
+		return listaRetornos;
+
 	}
 
 	@Override
-	public Conta buscarContaPorId(Long id) {
-		
-		Conta conta = contaRepository.findById(id).orElse(null);
-		
-		List<Transferencia> transferencias = transferenciaService.buscarTransferenciaPorConta(conta);
-		conta.setTransferencias(transferencias);
-			
-		return conta;
+	public ContaDTO salvarConta(ContaDTO contaDTO) {
+
+		Conta conta = modelMapper.map(contaDTO, Conta.class);
+		ContaDTO contaRetornoDTO = modelMapper.map(contaRepository.save(conta), ContaDTO.class);
+
+		return contaRetornoDTO;
+	}
+
+	@Transactional
+	@Override
+	public void deletarConta(Long idConta) throws EntidadeNaoEncontradaException {
+
+		Conta contaRetorno = contaRepository.findById(idConta).orElseThrow(
+				() -> new EntidadeNaoEncontradaException("Não foi encontrado um recurso com o ID: " + idConta));
+
+		transferenciaRepository.deletarTransferenciaPorConta(contaRetorno.getIdConta());
+		contaRepository.deleteById(contaRetorno.getIdConta());
 	}
 
 	@Override
-	public void updateConta(Conta conta) {
-		contaRepository.save(conta);
-		
+	public ContaDTO buscarContaPorId(Long id) throws EntidadeNaoEncontradaException {
+
+		Conta conta = contaRepository.findById(id)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException("Não foi encontrado um recurso com o ID: " + id));
+
+		ContaDTO contaDTO = modelMapper.map(conta, ContaDTO.class);
+
+		return contaDTO;
 	}
-	
+
+	@Override
+	public ContaDTO updateConta(Long idConta, ContaDTO contaDTO) throws EntidadeNaoEncontradaException  {
+
+		Conta contaRetorno = contaRepository.findById(idConta).orElseThrow(
+				() -> new EntidadeNaoEncontradaException("Não foi encontrado um recurso com o ID: " + idConta));	
+
+		contaRetorno.setNomeResponsavel(contaDTO.getNomeResponsavel());
+		ContaDTO contaRetornoDTO = modelMapper.map(contaRepository.save(contaRetorno), ContaDTO.class);
+
+		return contaRetornoDTO;
+	}
+
 }

@@ -1,11 +1,9 @@
 package br.com.banco.v1;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,88 +16,58 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.banco.core.entity.Conta;
 import br.com.banco.core.service.ContaService;
+import br.com.banco.core.service.TransferenciaService;
 import br.com.banco.v1.dto.ContaDTO;
 
 @RestController
-@RequestMapping(value = "/v1/")
+@RequestMapping(value = "/v1/conta")
 public class ContaController {
+
+	@Autowired
+	TransferenciaService transferenciaService;
 
 	@Autowired
 	ContaService service;
 
-	@Autowired
-	private ModelMapper modelMapper;
+	@GetMapping()
+	public ResponseEntity<Object> getContas() {
+		
+		List<ContaDTO> contasDTO = service.getContas();
 
-	@GetMapping("conta")
-	public List<ContaDTO> getContas() {
+		return ResponseEntity.status(HttpStatus.OK).body(contasDTO);
 
-		List<Conta> contas = new ArrayList<>();
-		List<ContaDTO> contasDTO = new ArrayList<>();
-
-		contas = service.getContas();
-
-		for (Conta conta : contas) {
-			ContaDTO contaDTO = new ContaDTO();
-			contaDTO = modelMapper.map(conta, ContaDTO.class);
-			contasDTO.add(contaDTO);
-		}
-
-		return contasDTO;
 	}
 
-	@PostMapping("conta")
+	@PostMapping()
 	public ResponseEntity<ContaDTO> saveConta(@RequestBody @Valid ContaDTO contaDTO) {
-		Conta conta = new Conta();
-		conta = modelMapper.map(contaDTO, Conta.class);
 
-		conta = service.salvarConta(conta);
-
-		ContaDTO contaDTORetorno = modelMapper.map(conta, ContaDTO.class);
-
-		return ResponseEntity.status(HttpStatus.CREATED).body(contaDTORetorno);
+		return ResponseEntity.status(HttpStatus.CREATED).body(service.salvarConta(contaDTO));
 	}
 
-	@DeleteMapping("conta/{idConta}")
-	public ResponseEntity<Object> deleteConta(@PathVariable(value = "idConta") Long idConta) {
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Object> deleteConta(@PathVariable(value = "id") Long idConta) {
+		
+		service.deletarConta(idConta);
 
-		Conta conta = service.buscarContaPorId(idConta);
-		if (conta != null) {
-			service.deletarConta(conta);
-			return ResponseEntity.status(HttpStatus.OK).body("Conta deletada com sucesso.");
-		}
-
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Conta com o Id = " + idConta + " não foi encontrada.");
+		return ResponseEntity.status(HttpStatus.OK).body("A conta de id " + idConta + " foi deletada com sucesso.");
+		
 	}
 
-	@GetMapping("conta/{idConta}")
-	public ResponseEntity<Object> buscarContaPorId(@PathVariable(value = "idConta") Long idConta) {
-		Conta conta = service.buscarContaPorId(idConta);
+	@GetMapping("/{id}")
+	public ResponseEntity<Object> buscarContaPorId(@PathVariable(value = "id") Long idConta) {
 
-		if (conta != null) {
+		ContaDTO contaDTO = service.buscarContaPorId(idConta);
 
-			ContaDTO contaDTO = modelMapper.map(conta, ContaDTO.class);
-			contaDTO.setTransferencias(conta.getTransferencias());
-			return ResponseEntity.status(HttpStatus.OK).body(contaDTO);
-		}
-
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Conta com o Id = " + idConta + " não foi encontrada.");
+		return ResponseEntity.status(HttpStatus.OK).body(contaDTO);
 
 	}
 
-	@PutMapping("conta/{idConta}")
-	public ResponseEntity<Object> updateConta(@RequestBody @Valid ContaDTO contaDTO, @PathVariable(value = "idConta") Long idConta) {
+	@PutMapping("/{id}")
+	public ResponseEntity<ContaDTO> updateConta(@RequestBody @Valid ContaDTO contaDTO,
+			@PathVariable(value = "id") Long idConta) {
 
-		Conta conta = service.buscarContaPorId(idConta);
-		if (conta != null) {
-			conta.setNomeResponsavel(conta.getNomeResponsavel());
-			conta.setNomeResponsavel(contaDTO.getNomeResponsavel());
-			service.updateConta(conta);
-			return ResponseEntity.status(HttpStatus.OK).body("Conta atualizada com sucesso.");
-		}
-
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Conta com o Id = " + idConta + " não foi encontrada.");
+		return ResponseEntity.status(HttpStatus.OK).body(service.updateConta(idConta, contaDTO));
 
 	}
 
