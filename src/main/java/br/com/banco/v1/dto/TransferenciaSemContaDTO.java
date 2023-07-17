@@ -11,14 +11,14 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TransferenciaSemContaDTO {
 
-private Long id;
-	
+	private Long id;
+
 	private Date dataTransferencia;
-	
+
 	private BigDecimal valor;
-	
+
 	private String tipo;
-	
+
 	private String nomeOperadorTransacao;
-	
+
 }

@@ -9,11 +9,11 @@ public interface ContaService {
 	List<ContaDTO> getContas();
 
 	ContaDTO salvarConta(ContaDTO contaDTO);
-	
+
 	void deletarConta(Long idConta);
-	
+
 	ContaDTO buscarContaPorId(Long id);
 
-	ContaDTO updateConta(Long idConta, ContaDTO contaDTO);
-	
+	ContaDTO updateConta(Long idConta, ContaDTO conta);
+
 }

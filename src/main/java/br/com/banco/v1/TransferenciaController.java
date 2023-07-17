@@ -38,9 +38,11 @@ public class TransferenciaController {
 			@RequestParam(name = "nome", required = false) String nome) {
 
 		List<TransferenciaDTO> lista = service.getTransferencias(dataInicio, dataFim, nome);
-
-		return ResponseEntity.status(HttpStatus.CREATED).body(lista);
-
+		if (lista.size() > 0) {
+			return ResponseEntity.status(HttpStatus.OK).body(lista);
+		}
+		return ResponseEntity.status(HttpStatus.NO_CONTENT)
+				.body("Não foram encontradas transferencias com o filtro informado");
 	}
 
 	@PostMapping()
@@ -56,16 +58,14 @@ public class TransferenciaController {
 
 		service.deletarTransferenciaPorId(idTransferencia);
 
-		return ResponseEntity.status(HttpStatus.OK).body("A transferência de ID "+ idTransferencia +" deletada com sucesso.");
+		return ResponseEntity.status(HttpStatus.OK).body("Transferência deletada com sucesso");
 	}
 
 	@GetMapping("nome-operador/{nomeOperador}")
 	public ResponseEntity<Object> buscarOperador(@PathVariable(value = "nomeOperador") String nomeOperador) {
 
 		List<TransferenciaDTO> transferenciasDTO = new ArrayList<>();
-
 		transferenciasDTO = service.buscarTransferenciasPorNomeOperador(nomeOperador);
-
 		return ResponseEntity.status(HttpStatus.OK).body(transferenciasDTO);
 	}
 

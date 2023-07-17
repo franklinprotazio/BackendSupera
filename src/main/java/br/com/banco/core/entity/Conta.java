@@ -14,17 +14,16 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "CONTA")
-public class Conta implements Serializable{
-	
+public class Conta implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_conta")
 	private Long idConta;
-	
+
 	@Column(name = "nome_responsavel")
 	private String nomeResponsavel;
-	
-	
+
 }

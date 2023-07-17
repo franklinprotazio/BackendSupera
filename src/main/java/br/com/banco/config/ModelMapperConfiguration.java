@@ -12,22 +12,21 @@ import br.com.banco.v1.dto.ContaDTO;
 @Configuration
 public class ModelMapperConfiguration {
 
-    @Bean
-    public static ModelMapper getModelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        modelMapper.addConverter(converterStringToString());
-        modelMapper.typeMap(Conta.class,
-                ContaDTO.class);
+	@Bean
+	public static ModelMapper getModelMapper() {
+		ModelMapper modelMapper = new ModelMapper();
+		modelMapper.getConfiguration().setAmbiguityIgnored(true);
+		modelMapper.addConverter(converterStringToString());
+		modelMapper.typeMap(Conta.class, ContaDTO.class);
 
-        return modelMapper;
-    }
+		return modelMapper;
+	}
 
-    private static Converter<String, String> converterStringToString() {
-        return new AbstractConverter<String, String>() {
-            protected String convert(String source) {
-                return source == null ? null : source.trim();
-            }
-        };
-    }
+	private static Converter<String, String> converterStringToString() {
+		return new AbstractConverter<String, String>() {
+			protected String convert(String source) {
+				return source == null ? null : source.trim();
+			}
+		};
+	}
 }

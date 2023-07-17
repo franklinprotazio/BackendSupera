@@ -22,7 +22,7 @@ public class TransferenciaServiceImpl implements TransferenciaService {
 
 	@Autowired
 	private TransferenciaRepository transferenciaRepository;
-	
+
 	@Autowired
 	private ModelMapper modelMapper;
 
@@ -50,10 +50,11 @@ public class TransferenciaServiceImpl implements TransferenciaService {
 	@Transactional
 	@Override
 	public TransferenciaDTO salvarTransferencia(TransferenciaDTO transferenciaDTO) {
-		
+
 		Transferencia transferencia = modelMapper.map(transferenciaDTO, Transferencia.class);
-		TransferenciaDTO transferenciaRetornoDTO = modelMapper.map(transferenciaRepository.save(transferencia), TransferenciaDTO.class);
-		return transferenciaRetornoDTO ;
+		TransferenciaDTO transferenciaRetornoDTO = modelMapper.map(transferenciaRepository.save(transferencia),
+				TransferenciaDTO.class);
+		return transferenciaRetornoDTO;
 	}
 
 	@Override
@@ -67,9 +68,8 @@ public class TransferenciaServiceImpl implements TransferenciaService {
 
 	@Override
 	public void deletarTransferenciaPorId(Long idTransferencia) {
-				
-			transferenciaRepository.deleteById(idTransferencia);
-		
+
+		transferenciaRepository.deleteById(idTransferencia);
 
 	}
 
@@ -79,8 +79,8 @@ public class TransferenciaServiceImpl implements TransferenciaService {
 		List<TransferenciaDTO> transferenciasDTO = new ArrayList();
 
 		for (Transferencia transferencia : transferencias) {
-	
-			TransferenciaDTO transferenciaDTO = convertter(transferencia);				
+
+			TransferenciaDTO transferenciaDTO = convertter(transferencia);
 			transferenciasDTO.add(transferenciaDTO);
 		}
 
@@ -89,7 +89,7 @@ public class TransferenciaServiceImpl implements TransferenciaService {
 
 	private TransferenciaDTO convertter(Transferencia transferencia) {
 		TransferenciaDTO transferenciaDTO = new TransferenciaDTO();
-		
+
 		transferenciaDTO.setDataTransferencia(transferencia.getDataTransferencia());
 		transferenciaDTO.setId(transferencia.getId());
 		transferenciaDTO.setNomeOperadorTransacao(transferencia.getNomeOperadorTransacao());
@@ -104,12 +104,12 @@ public class TransferenciaServiceImpl implements TransferenciaService {
 	public List<TransferenciaDTO> getTransferencias(String dataInicio, String dataFim, String nome) {
 
 		dataInicio = Objects.nonNull(dataInicio) ? dataInicio : "";
-		dataFim =  Objects.nonNull(dataFim) ? dataFim : "";
-		nome= Objects.nonNull(nome) ? nome : "";
-	
-		List<Transferencia> transferencias = transferenciaRepository.getTransferencias(dataInicio,dataFim,nome);
+		dataFim = Objects.nonNull(dataFim) ? dataFim : "";
+		nome = Objects.nonNull(nome) ? nome : "";
+
+		List<Transferencia> transferencias = transferenciaRepository.getTransferencias(dataInicio, dataFim, nome);
 		List<TransferenciaDTO> transferenciasDTO = new ArrayList<>();
-		
+
 		for (Transferencia transferencia : transferencias) {
 			TransferenciaDTO dto = modelMapper.map(transferencia, TransferenciaDTO.class);
 			transferenciasDTO.add(dto);

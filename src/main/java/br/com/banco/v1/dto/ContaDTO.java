@@ -13,10 +13,10 @@ import lombok.Data;
 public class ContaDTO {
 
 	private Long idConta;
-	
+
 	@NotBlank
 	private String nomeResponsavel;
-	
-	private List<TransferenciaSemContaDTO> transferencias; 
-	
+
+	private List<TransferenciaSemContaDTO> transferencias;
+
 }

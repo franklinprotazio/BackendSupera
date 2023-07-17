@@ -33,25 +33,25 @@ public class ContaServiceImpl implements ContaService {
 	public List<ContaDTO> getContas() {
 		List<Conta> contas = contaRepository.findAll();
 		List<ContaDTO> listaRetornos = new ArrayList<>();
-		List<TransferenciaSemContaDTO> listaTranferenciasDTO = new ArrayList<>();
 
 		if (!contas.isEmpty()) {
 			for (Conta conta : contas) {
 				List<Transferencia> listaTranferencias = transferenciaRepository
 						.findTransferenciaByConta(conta.getIdConta());
-				for (Transferencia transferencia : listaTranferencias) {
+				List<TransferenciaSemContaDTO> listaTranferenciasDTO = new ArrayList<>(); // Movido para dentro do loop
 
+				for (Transferencia transferencia : listaTranferencias) {
 					TransferenciaSemContaDTO tranferenciasDTO = modelMapper.map(transferencia,
 							TransferenciaSemContaDTO.class);
 					listaTranferenciasDTO.add(tranferenciasDTO);
 				}
+
 				ContaDTO contaDTO = modelMapper.map(conta, ContaDTO.class);
 				contaDTO.setTransferencias(listaTranferenciasDTO);
 				listaRetornos.add(contaDTO);
 			}
 		}
 		return listaRetornos;
-
 	}
 
 	@Override
@@ -74,22 +74,37 @@ public class ContaServiceImpl implements ContaService {
 		contaRepository.deleteById(contaRetorno.getIdConta());
 	}
 
+	
 	@Override
 	public ContaDTO buscarContaPorId(Long id) throws EntidadeNaoEncontradaException {
+	    Conta conta = contaRepository.findById(id)
+	            .orElseThrow(() -> new EntidadeNaoEncontradaException("Não foi encontrado um recurso com o ID: " + id));
 
-		Conta conta = contaRepository.findById(id)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException("Não foi encontrado um recurso com o ID: " + id));
+	    ContaDTO contaDTO = modelMapper.map(conta, ContaDTO.class);
 
-		ContaDTO contaDTO = modelMapper.map(conta, ContaDTO.class);
+	    // Buscar as transferências associadas à conta
+	    List<Transferencia> transferencias = transferenciaRepository.findTransferenciaByConta(id);
+	    List<TransferenciaSemContaDTO> transferenciasDTO = new ArrayList<>();
 
-		return contaDTO;
+	    // Mapear as transferências para DTO
+	    for (Transferencia transferencia : transferencias) {
+	        TransferenciaSemContaDTO transferenciaDTO = modelMapper.map(transferencia, TransferenciaSemContaDTO.class);
+	        transferenciasDTO.add(transferenciaDTO);
+	    }
+
+	    // Definir as transferências no DTO da conta
+	    contaDTO.setTransferencias(transferenciasDTO);
+
+	    return contaDTO;
 	}
 
+
+	@Transactional
 	@Override
-	public ContaDTO updateConta(Long idConta, ContaDTO contaDTO) throws EntidadeNaoEncontradaException  {
+	public ContaDTO updateConta(Long idConta, ContaDTO contaDTO) throws EntidadeNaoEncontradaException {
 
 		Conta contaRetorno = contaRepository.findById(idConta).orElseThrow(
-				() -> new EntidadeNaoEncontradaException("Não foi encontrado um recurso com o ID: " + idConta));	
+				() -> new EntidadeNaoEncontradaException("Não foi encontrado um recurso com o ID: " + idConta));
 
 		contaRetorno.setNomeResponsavel(contaDTO.getNomeResponsavel());
 		ContaDTO contaRetornoDTO = modelMapper.map(contaRepository.save(contaRetorno), ContaDTO.class);

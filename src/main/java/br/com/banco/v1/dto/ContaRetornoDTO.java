@@ -9,7 +9,7 @@ import lombok.Data;
 public class ContaRetornoDTO {
 
 	private Long idConta;
-	
+
 	private String nomeResponsavel;
 
 }
