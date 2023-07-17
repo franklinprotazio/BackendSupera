@@ -7,18 +7,18 @@ O BackendSupera é um sistema bancário que oferece funcionalidades de gerenciam
 
 ## Funcionalidades
 
-Cadastro e gerenciamento de contas bancárias.
-Realização de transferências entre contas.
-Consulta de informações de contas por ID.
-Listagem de todas as contas cadastradas.
+- Cadastro e gerenciamento de contas bancárias.
+- Realização de transferências entre contas.
+- Consulta de informações de contas por ID.
+- Listagem de todas as contas e transferencias.
 
 ## Endpoints da API
 
 O BackendSupera oferece os seguintes endpoints para interação com a API:
 
-GET /contas - Retorna a lista de todas as contas bancárias cadastradas.
-GET /contas/{id} - Retorna os detalhes de uma conta específica com base no ID.
-POST /contas - Cria uma nova conta bancária.
-PUT /contas/{id} - Atualiza os dados de uma conta existente.
-DELETE /contas/{id} - Remove uma conta bancária existente.
-POST /transferencias - Realiza uma transferência entre contas bancárias.
+- GET /contas - Retorna a lista de todas as contas bancárias cadastradas.
+- GET /contas/{id} - Retorna os detalhes de uma conta específica com base no ID.
+- POST /contas - Cria uma nova conta bancária.
+- PUT /contas/{id} - Atualiza os dados de uma conta existente.
+- DELETE /contas/{id} - Remove uma conta bancária existente.
+- POST /transferencias - Realiza uma transferência entre contas bancárias.
